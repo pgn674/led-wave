@@ -1,7 +1,7 @@
 #include "FastLED.h"
-#define SLOWNESS 512.0
+#define SLOWNESS 256.0
 #define NUM_LEDS 50
-#define BRIGHTNESS 0.25
+#define BRIGHTNESS 1
 
 // Defaults
 // SLOWNESS: 256.0
