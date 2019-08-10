@@ -25,6 +25,20 @@
 // Slow is Red
 // Medium is Green
 // Fast is Blue
+// "Slowness" is "How many steps it takes to get from minimum brightness to maximum"
+
+// If you wish to change the speeds, I recomend this method:
+// Chose three positive seqencial integers: A, B, C. If these hold true:
+// LCM(A,B)=A*B
+// LCM(A,C)=A*C
+// LCM(B,C)=B*C
+// LCM(A,B,C)=A*B*C
+// Then you got a good set. Set the speeds like this:
+// Slow speed: A/A
+// Medium speed: B/A
+// Fast speed: C/A
+// A higher set of integers will result in a longer pattern before it repeats.
+// Some examples are | 3,4,5 | 5,6,7 | 7,8,9 | 9,10,11 |
 
 
 // Creates fancy array named "leds" of size 1
