@@ -1,13 +1,14 @@
 #include "FastLED.h"
-#define SLOWNESS 64.0
+#define SLOWNESS 512.0
 #define NUM_LEDS 50
-#define BRIGHTNESS 1.0
-#define SLOW_SPEED = 3.0/3.0
-#define MEDIUM_SPEED = 4.0/3.0
-#define FAST_SPEED = 5.0/3.0
+#define BRIGHTNESS 0.25
+#define SLOW_SPEED 7.0/7.0
+#define MEDIUM_SPEED 8.0/7.0
+#define FAST_SPEED 9.0/7.0
 #define SLOW_DIRECTION 1
-#define MEDIUM_DIRECTION 1
+#define MEDIUM_DIRECTION -1
 #define FAST_DIRECTION 1
+#define WAVE_LENGTH 50
 
 
 // Defaults
@@ -21,6 +22,7 @@
 // SLOW_DIRECTION: 1
 // MEDIUM_DIRECTION: 1
 // FAST_DIRECTION: 1
+// WAVE_LENGTH: 50
 
 // Slow is Red
 // Medium is Green
@@ -70,9 +72,9 @@ void setup() {
 
 void loop() {
   for (int led_select = 0; led_select < NUM_LEDS; led_select++) {
-    slow = round(((sin((((float)timey * SLOW_DIRECTION + (SLOWNESS / (float)NUM_LEDS) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
-    medium = round(((sin((((float)timey * MEDIUM_DIRECTION * 4.0 / 3.0 + (SLOWNESS / (float)NUM_LEDS) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
-    fast = round(((sin((((float)timey * FAST_DIRECTION * 5.0 / 3.0 + (SLOWNESS / (float)NUM_LEDS) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    slow = round(((sin((((float)timey * SLOW_DIRECTION * SLOW_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    medium = round(((sin((((float)timey * MEDIUM_DIRECTION * MEDIUM_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    fast = round(((sin((((float)timey * FAST_DIRECTION * FAST_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
     leds[led_select] = CRGB(slow, medium, fast);
   }
   FastLED.show();
