@@ -113,3 +113,11 @@ No
 
 9,10,11
 Yes
+
+
+
+==== Redo with new variable names ===
+
+slow = round(((sin((((float)timey * SLOW_DIRECTION * SLOW_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+
+

@@ -1,14 +1,16 @@
 #include "FastLED.h"
-#define SLOWNESS 512.0
+#define SLOWNESS 256
 #define NUM_LEDS 50
-#define BRIGHTNESS 0.25
-#define SLOW_SPEED 7.0/7.0
-#define MEDIUM_SPEED 8.0/7.0
-#define FAST_SPEED 9.0/7.0
+#define BRIGHTNESS 1.0
+#define SLOW_SPEED 9.0
+#define MEDIUM_SPEED 10.0
+#define FAST_SPEED 11.0
 #define SLOW_DIRECTION 1
 #define MEDIUM_DIRECTION -1
 #define FAST_DIRECTION 1
 #define WAVE_LENGTH 50
+#define RANDOM true
+#define CHANGE_PERIOD 2500
 
 
 // Defaults
@@ -23,6 +25,8 @@
 // MEDIUM_DIRECTION: 1
 // FAST_DIRECTION: 1
 // WAVE_LENGTH: 50
+// RANDOM false
+// CHANGE_PERIOD 2500
 
 // Slow is Red
 // Medium is Green
@@ -52,13 +56,19 @@ int timey = 0;
 int slow;
 int medium;
 int fast;
+int current_slow_speed = SLOW_SPEED;
+int current_medium_speed = MEDIUM_SPEED;
+int current_fast_speed = FAST_SPEED;
 
 void setup() {
+  randomSeed(analogRead(0));
+  
   // NEOPIXEL is WS2811
   // Using data pin 6 on the board
   // Uses variable named "leds"
   FastLED.addLeds<WS2811, 6>(leds, NUM_LEDS);
 
+  // Flash so I know that the program has restarted.
   ledset(0, NUM_LEDS - 1) = CRGB::Black;
   FastLED.show();
   delay(200);
@@ -71,10 +81,16 @@ void setup() {
 }
 
 void loop() {
+  if (RANDOM && timey % CHANGE_PERIOD == 0) {
+    // 1/2 of the time, don't change; 1/4 of the time, reduce speed; 1/4 of the time, increase speed. Cap maximum and minimum at FAST_SPEED.
+    current_slow_speed = max(min(current_slow_speed + random(-1,2), FAST_SPEED), FAST_SPEED * -1);
+    current_medium_speed = max(min(current_medium_speed + random(-1,2), FAST_SPEED), FAST_SPEED * -1);
+    current_fast_speed = max(min(current_fast_speed + random(-1,2), FAST_SPEED), FAST_SPEED * -1);
+  }
   for (int led_select = 0; led_select < NUM_LEDS; led_select++) {
-    slow = round(((sin((((float)timey * SLOW_DIRECTION * SLOW_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
-    medium = round(((sin((((float)timey * MEDIUM_DIRECTION * MEDIUM_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
-    fast = round(((sin((((float)timey * FAST_DIRECTION * FAST_SPEED + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    slow = round(((sin((((float)timey * SLOW_DIRECTION * ( current_slow_speed / SLOW_SPEED ) + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    medium = round(((sin((((float)timey * MEDIUM_DIRECTION * ( current_medium_speed / SLOW_SPEED ) + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
+    fast = round(((sin((((float)timey * FAST_DIRECTION * ( current_fast_speed / SLOW_SPEED ) + (SLOWNESS / (float)WAVE_LENGTH) * (float)led_select) * 2.0 * PI) / SLOWNESS) + 1.0) / 2.0) * 255.0 * BRIGHTNESS);
     leds[led_select] = CRGB(slow, medium, fast);
   }
   FastLED.show();
